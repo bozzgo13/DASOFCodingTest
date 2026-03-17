@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="VehiclePriceCalculator.Core/VehiclePriceCalculator.Core.csproj" />
+  <Project Path="VehiclePriceCalculator.Tests/VehiclePriceCalculator.Tests.csproj" />
+  <Project Path="VehiclePriceCalculator/VehiclePriceCalculator.csproj" />
+</Solution>

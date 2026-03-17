@@ -1,0 +1,88 @@
+@VehiclePriceCalculator_HostAddress = http://localhost:5111
+
+### 1. Standard Calculation (Base Net, Equipment Gross)
+# Scenario from given specification: 10000 Net + 122 Gross with 22% VAT
+POST {{VehiclePriceCalculator_HostAddress}}/api/price/calculate
+Content-Type: application/json
+
+{
+  "baseVehiclePrice": {
+    "amount": 10000.00,
+    "isGross": false
+  },
+  "additionalEquipment": {
+    "amount": 122.00,
+    "isGross": true
+  },
+  "vatRate": 22.0
+}
+
+### 2. Both Prices as Net
+# 20000 Net + 2000 Net with 22% VAT
+POST {{VehiclePriceCalculator_HostAddress}}/api/price/calculate
+Content-Type: application/json
+
+{
+  "baseVehiclePrice": {
+    "amount": 20000.00,
+    "isGross": false
+  },
+  "additionalEquipment": {
+    "amount": 2000.00,
+    "isGross": false
+  },
+  "vatRate": 22.0
+}
+
+### 3. Only Base Vehicle (No Equipment)
+# Testing nullability of AdditionalEquipment
+POST {{VehiclePriceCalculator_HostAddress}}/api/price/calculate
+Content-Type: application/json
+
+{
+  "baseVehiclePrice": {
+    "amount": 15000.00,
+    "isGross": true
+  },
+  "additionalEquipment": null,
+  "vatRate": 9.5
+}
+
+### 4. 0 % VAT (Net and Gross are the same)
+POST {{VehiclePriceCalculator_HostAddress}}/api/price/calculate
+Content-Type: application/json
+
+{
+  "baseVehiclePrice": {
+    "amount": 60000.00,
+    "isGross": true
+  },
+  "additionalEquipment": {
+    "amount": 3499.00,
+    "isGross": true
+  },
+  "vatRate": 0
+}
+
+### 5. Validation Error (Negative Amount)
+# Should return 400 Bad Request because of Ammount < 0.01
+POST {{VehiclePriceCalculator_HostAddress}}/api/price/calculate
+Content-Type: application/json
+
+{
+  "baseVehiclePrice": {
+    "amount": -500.00,
+    "isGross": false
+  },
+  "additionalEquipment": null,
+  "vatRate": 22.0
+}
+
+### 6. Validation Error (Missing Base Price)
+# Should return 400 Bad Request because of [Required] baseVehiclePrice
+POST {{VehiclePriceCalculator_HostAddress}}/api/price/calculate
+Content-Type: application/json
+
+{
+  "vatRate": 22.0
+}
